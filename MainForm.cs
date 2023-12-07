@@ -129,8 +129,8 @@ namespace RockbarForEDCB
             // 初回表示
             RefreshEvent(true, true);
 
-            //スリープ・休止状態をOSから通知してもらう
-            SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(Detect_SleepWakeup);
+            // スリープ・休止状態をOSから通知してもらう
+            SystemEvents.PowerModeChanged += (sender, e) => { if (e.Mode == PowerModes.Resume) RefreshEvent(false, true); };
 
             // タイマーを有効化
             timer.Enabled = true;
@@ -1241,23 +1241,6 @@ namespace RockbarForEDCB
         {
             adjustListViewColumns(serviceListView);
             adjustListViewColumns(tunerListView);
-        }
-
-        /// <summary>
-        /// スリープ、休止状態の検出
-        /// https://ameblo.jp/synthk100/entry-12667004952.html
-        /// </summary>
-        /// <param name="sender">イベントソース</param>
-        /// <param name="e">イベントパラメータ</param>
-        private void Detect_SleepWakeup(object sender, PowerModeChangedEventArgs e)
-        {
-            switch (e.Mode)
-            {
-                case PowerModes.Resume:
-                    // スリープまたは休止状態からの再開時に表示を更新
-                    RefreshEvent(false, true);
-                    break;
-            }
         }
     }
 }
